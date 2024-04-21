@@ -3,11 +3,11 @@ import datetime
 
 # Enable libpcap support
 conf.use_pcap = True
-i = 1
+packet_number = 1
 
 # Define a packet callback function
 def packetCallback(packet):
-    global i
+    global packet_number
     time=datetime.datetime.now()
 
     try:
@@ -18,16 +18,21 @@ def packetCallback(packet):
         # Extract protocol information
         protocol = packet[IP].proto
 
+        # get payload
         if packet.haslayer(TCP):
-            print(f"[{i}] [{time}] Source IP: {src_ip}, Destination IP: {dst_ip}, Protocol: {protocol}, Payload: {format(len(packet[TCP]))} Bytes")
+            payload_len = len(packet[TCP])
+        elif packet.haslayer(UDP):
+            payload_len = len(packet[UDP])
+        elif packet.haslayer(ICMP):
+            payload_len = len(packet[ICMP])
+        else:
+            payload_len = 0
 
-        if packet.haslayer(UDP):
-            print(f"[{i}] [{time}] Source IP: {src_ip}, Destination IP: {dst_ip}, Protocol: {protocol}, Payload: {format(len(packet[UDP]))} Bytes")
-
-        if packet.haslayer(ICMP):
-            print(f"[{i}] [{time}] Source IP: {src_ip}, Destination IP: {dst_ip}, Protocol: {protocol}, Payload: {format(len(packet[ICMP]))} Bytes")
+        # display the packet
+        print(f"[{packet_number}] [{time}] Source IP: {src_ip}, Destination IP: {dst_ip}, Protocol: {protocol}, Payload: {payload_len} Bytes")
         
-        i += 1
+        # update the packet number
+        packet_number += 1
     except:
         pass    
 
@@ -40,7 +45,7 @@ def sniffPackets(interface="en0"):
 
 # Main function
 def main():
-    interface = input("Enter the interface to sniff (e.g., eth0, lo0): ")
+    interface = input("Enter the interface to sniff (e.g., eth0, lo0, en0): ")
     sniffPackets(interface)
 
 if __name__ == "__main__":
