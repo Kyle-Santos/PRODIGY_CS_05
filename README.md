@@ -4,13 +4,14 @@
 This Python script allows you to sniff network packets on a specified interface and display information about each packet.
 
 ### Requirements
-Python 3.x
-scapy library (pip install scapy)
+1. Python 3.x
+2. scapy library (pip install scapy)
 
 ### Usage
 1. Clone the repository or download the script packet_sniffer.py.
 2. Install the required dependencies using pip install scapy.
 3. Run the script by executing:
+
     ```
     python PacketAnalyzer.py.
     ```
